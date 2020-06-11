@@ -49,19 +49,20 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ListVewModel::class.java)
         viewModel.animals.observe(viewLifecycleOwner, animalListDataObserver)
-        viewModel.loading.observe(viewLifecycleOwner, errorLiveDateObserver)
+        viewModel.loading.observe(viewLifecycleOwner, loadingLiveDateObserver)
         viewModel.refresh()
         animalList.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = listAdapter
         }
+        refreshLayout.isRefreshing = false
         refreshLayout.setOnRefreshListener{
+            refreshLayout.isRefreshing = false
             animalList.visibility = View.GONE
             errorlist.visibility = View.GONE
             loadingView.visibility = View.VISIBLE
             viewModel.refresh()
-            refreshLayout.isRefreshing = false
-            loadingView.visibility = View.GONE
+
         }
 
     }
