@@ -3,6 +3,7 @@ package com.example.project.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.project.di.AppModule
 import com.example.project.di.DaggerViewModelComponent
 import com.example.project.model.Animal
 import com.example.project.model.AnimalApiService
@@ -24,11 +25,16 @@ class ListVewModel(application: Application): AndroidViewModel(application) {
     @Inject
     lateinit var   apiService: AnimalApiService
 
-    private val prefs = SharedPreferencesHelper(getApplication())
+    @Inject
+    lateinit var prefs: SharedPreferencesHelper
+
     private var invalidApikey = false
 
     init{
-        DaggerViewModelComponent.create().inject(this)
+        DaggerViewModelComponent.builder()
+            .appModule(AppModule(getApplication()))
+            .build()
+            .inject(this)
     }
 
     fun refresh() {
